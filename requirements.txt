@@ -1,0 +1,3 @@
+azure-servicebus
+waitress==1.2.1
+flask==1.0.2
