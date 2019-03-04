@@ -12,9 +12,11 @@ log_level = logging.getLevelName(os.environ.get("LOG_LEVEL", "INFO"))
 logging.basicConfig(level=log_level)
 
 SERVICE_NAMESPACE = os.environ.get("SERVICE_NAMESPACE")
-SERVICE_SAS_TOKEN_NAME = os.environ.get("SERVICE_SAS_TOKEN_NAME")
-SERVICE_SAS_TOKEN_VALUE = os.environ.get("SERVICE_SAS_TOKEN_VALUE")
 PAYLOAD_KEY = os.environ.get("PAYLOAD_KEY")
+
+if not SERVICE_NAMESPACE:
+    logging.error("namespace must be provided")
+    exit(1)
 
 
 @APP.route("/<queue_name>", methods=['POST'])
@@ -26,8 +28,8 @@ def process_request(queue_name):
     """
     input_data = request.get_json()
     bus_service = ServiceBusService(service_namespace=SERVICE_NAMESPACE,
-                                    shared_access_key_name=SERVICE_SAS_TOKEN_NAME,
-                                    shared_access_key_value=SERVICE_SAS_TOKEN_VALUE)
+                                    shared_access_key_name=request.headers.get('sas-token-name'),
+                                    shared_access_key_value=request.headers.get('sas-token'))
 
     for index, input_entity in enumerate(input_data):
         data: str = json.dumps(input_entity[PAYLOAD_KEY] if PAYLOAD_KEY else input_entity).encode(
