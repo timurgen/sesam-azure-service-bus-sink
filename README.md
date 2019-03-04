@@ -8,9 +8,7 @@ Simple sink from Sesam.io to Azure service bus
   "type": "system:microservice",
   "docker": {
     "environment": {
-      "SERVICE_NAMESPACE": "<namespace>",
-      "SERVICE_SAS_TOKEN_NAME": "<sas token name>",
-      "SERVICE_SAS_TOKEN_VALUE": "<sas token>"
+      "SERVICE_NAMESPACE": "<namespace>"
     },
     "image": "ohuenno/sesam-azure-sb-sink",
     "port": 5000
@@ -33,6 +31,10 @@ Simple sink from Sesam.io to Azure service bus
   "sink": {
     "type": "json",
     "system": "azure-sb-sink",
+    "headers": {
+    "sas-token": "<token>",
+    "sas-token-name": "<token name>"
+    },
     "url": "<queue name>"
   },
   "transform": {
